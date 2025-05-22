@@ -29,6 +29,7 @@ df_clean = df_clean.drop_duplicates()
 
 # Comprovar que les URL de la variable Enllaç comencen per https://www.reddit.com/.
 df_clean = df_clean[df_clean["Enllaç\r"].str.startswith("https://www.reddit.com/")]
+df_clean.to_csv('reddit_trending_clean.csv', index=False, sep=';')
 
 # Model supervisat:
 import pandas as pd
