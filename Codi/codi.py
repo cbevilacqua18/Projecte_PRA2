@@ -118,3 +118,46 @@ stat, p = mannwhitneyu(vots_popular, vots_resta, alternative='two-sided')
 print("Mann-Whitney U Test:")
 print("Estadístic:", stat)
 print("p-valor:", p)
+
+rom scipy.stats import mannwhitneyu
+
+# Afegim una nova columna amb la longitud del títol
+df['longitud_titol'] = df['Títol'].apply(lambda x: len(str(x).split()))
+
+# Dividim en dos grups: posts populars i no populars
+grup_popular = df[df['EsPopular'] == 1]['longitud_titol']
+grup_no_popular = df[df['EsPopular'] == 0]['longitud_titol']
+
+# Contrast d’hipòtesis no paramètric (no suposem normalitat)
+stat, p = mannwhitneyu(grup_popular, grup_no_popular, alternative='two-sided')
+
+print(f'Estadístic U: {stat:.2f}')
+print(f'Valor p: {p:.4f}')
+
+if p < 0.05:
+    print("✅ Rebutgem H₀: Hi ha diferències significatives en la longitud del títol.")
+else:
+    print("❌ No es rebutja H₀: No hi ha diferències significatives.")
+
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Estètica
+sns.set(style="whitegrid")
+
+# Dades a graficar
+df['Popularitat'] = df['EsPopular'].map({1: 'Popular', 0: 'No popular'})
+
+# Boxplot
+plt.figure(figsize=(8, 6))
+sns.boxplot(x='Popularitat', y='longitud_titol', data=df, palette='pastel')
+
+# Detalls del gràfic
+plt.title('Longitud del títol segons la popularitat del post', fontsize=14)
+plt.xlabel('Categoria de popularitat', fontsize=12)
+plt.ylabel('Longitud del títol (nombre de paraules)', fontsize=12)
+
+plt.tight_layout()
+plt.show()
+
